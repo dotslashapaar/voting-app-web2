@@ -1,0 +1,130 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Header styles */
+.header {
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Main content styles */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.result-table caption {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.result-table th,
+.result-table td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Result bar styles */
+.result-bar {
+    height: 20px;
+    background-color: #32CD32; /* Green */
+}
+
+.result-bar-inner {
+    height: 100%;
+    background-color: #000; /* Black */
+}
+
+/* Winner styles */
+.winner {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Footer styles */
+.footer {
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+/* Footer styles */
+.footer {
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer a {
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #32CD32; /* Green */
+    border-radius: 5px;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+.encrypted-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+  
+  .encrypted-table th,
+  .encrypted-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .encrypted-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .encrypted-table td:nth-child(1) {
+    width: 5%;
+  }
+  
+  .encrypted-table td:nth-child(2) {
+    width: 15%;
+  }
+  
+  .encrypted-table td:nth-child(3) {
+    width: 40%;
+  }
+  
+  .encrypted-table td:nth-child(4) {
+    width: 40%;
+  }

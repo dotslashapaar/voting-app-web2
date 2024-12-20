@@ -1,0 +1,96 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000; /* Black */
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container styles */
+.container {
+    background-color: #fff; /* White */
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%; /* 90% width of the viewport */
+    max-width: 1400px; /* Maximum width */
+    height: 90vh; /* 90% height of the viewport */
+}
+
+/* Header styles */
+.header {
+    background-color: #4caf50; /* Green */
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.heading {
+    color: #fff;
+}
+
+/* Voter Details styles */
+.voter-details {
+    width: 45%; /* 45% width of the container */
+    float: left;
+}
+
+.voter-details h2 {
+    margin-bottom: 10px;
+}
+
+.voter-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.voter-table th,
+.voter-table td {
+    border: 1px solid #000; /* Black */
+    padding: 8px;
+}
+
+/* Candidate Details styles */
+.candidate-details {
+    width: 45%; /* 45% width of the container */
+    float: right;
+}
+
+.candidate-details h2 {
+    margin-bottom: 10px;
+}
+
+.candidate-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.candidate-table th,
+.candidate-table td {
+    border: 1px solid #000; /* Black */
+    padding: 8px;
+}
+
+.actions {
+    margin-top: 20px;
+}
+
+/* Button styles */
+.green-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4caf50; /* Green */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}

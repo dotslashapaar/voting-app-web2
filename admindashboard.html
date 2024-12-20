@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="admindashstyles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <p>Welcome to the Admin Dashboard. This is where you can manage elections, candidates, and voters.</p>
+        <button id="logoutButton" class="logout-button">Logout</button>
+        <div class="menu" id="menu">
+            <button id="hamburger">&#9776;</button>
+            <div id="menuItems" class="menu-items">
+                <button id="deleteElectionBtn">Delete Election</button>
+                <button id="startVoting" onclick="updateVotingStatus(true)">Start Voting</button>
+    <button id="endVoting" onclick="updateVotingStatus(false)">End Voting</button>
+                <button id="addCandidateBtn">Add Candidate</button>
+                <button id="modifyCandidateBtn">Modify Candidate</button>
+                <button id="extractDBBtn">Extract Database Tables</button>
+            </div>
+        </div>
+        <div class="content" id="content">
+            <!-- Content will be loaded here depending on the selected option -->
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Logout',
+                text: 'Are you sure you want to logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, logout'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "index.html";
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuItems = document.getElementById('menuItems');
+            const content = document.getElementById('content');
+            const hamburger = document.getElementById('hamburger');
+
+            let activeButton = null;
+
+            hamburger.addEventListener('click', function () {
+                menuItems.classList.toggle('show');
+            });
+
+            menuItems.addEventListener('click', function (event) {
+                const target = event.target;
+
+                if (target.tagName === 'BUTTON') {
+                    const action = target.id.replace('Btn', '');
+
+                    if (activeButton === action) {
+                        content.innerHTML = '';
+                        activeButton = null;
+                        target.classList.remove('active');
+                    } else {
+                        executeAction(action);
+                        activeButton = action;
+                        Array.from(menuItems.children).forEach(button => button.classList.remove('active'));
+                        target.classList.add('active');
+                    }
+                }
+            });
+
+            function executeAction(action) {
+                switch (action) {
+                    case 'deleteElection':
+                        showDeleteElection();
+                        break;
+                    case 'startVotingPeriod':
+                        showStartVotingPeriod();
+                        break;
+                    case 'endVotingPeriod':
+                        showEndVotingPeriod();
+                        break;
+                    case 'addCandidate':
+                        showAddCandidate();
+                        break;
+                    case 'modifyCandidate':
+                        showModifyCandidate();
+                        break;
+                    case 'extractDB':
+                        extractDBTables();
+                        break;
+                    default:
+                        console.error('Invalid action');
+                }
+            }
+
+            function showDeleteElection() {
+                setContent(`
+                    <h2>Delete Election</h2>
+                    <form id="deleteElectionForm">
+                        <button type="submit">Delete Election</button>
+                    </form>
+                `);
+
+                document.getElementById('deleteElectionForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    deleteElection();
+                });
+            }
+
+            function deleteElection() {
+                Swal.fire({
+                    title: 'Delete Election',
+                    text: 'Are you sure you want to delete the election? This will clear the voter results table.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'deleteElection.php', true);
+                        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                Swal.fire({
+                                    title: 'Success',
+                                    text: xhr.responseText,
+                                    icon: 'success'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'An error occurred while deleting the election!',
+                                    icon: 'error'
+                                });
+                            }
+                        };
+                        xhr.onerror = function() {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Network error. Please try again.',
+                                icon: 'error'
+                            });
+                        };
+                        xhr.send();
+                    }
+                });
+            }
+
+            function showStartVotingPeriod() {
+                setContent(`
+                    <h2>Start Voting Period</h2>
+                    <form>
+                        <button type="submit">Start</button>
+                    </form>
+                `);
+            }
+
+            function showEndVotingPeriod() {
+                setContent(`
+                    <h2>End Voting Period</h2>
+                    <form>
+                        <button type="submit">End</button>
+                    </form>
+                `);
+            }
+
+            function showReleaseResults() {
+                setContent(`
+                    <h2>Release Election Results</h2>
+                    <form>
+                        <button type="submit">Release Results</button>
+                    </form>
+                `);
+            }
+
+            function showAddCandidate() {
+                setContent(`
+                    <h2>Add Candidate</h2>
+                    <form id="addCandidateForm">
+                        <label for="candidateFullName">Full Name:</label>
+                        <input type="text" id="candidateFullName" name="candidateFullName"><br>
+                        
+                        <label for="candidateDob">Date of Birth:</label>
+                        <input type="date" id="candidateDob" name="candidateDob"><br>
+
+                        <label for="candidateMob">Mobile Number:</label>
+                        <input type="text" id="candidateMob" name="candidateMob"><br>
+
+                        <button type="submit">Add Candidate</button>
+                    </form>
+                `);
+
+                document.getElementById('addCandidateForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    addCandidate();
+                });
+            }
+
+            function addCandidate() {
+                const candidateFullName = document.getElementById('candidateFullName').value;
+                const candidateDob = document.getElementById('candidateDob').value;
+                const candidateMob = document.getElementById('candidateMob').value;
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'addCandidate.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: xhr.responseText,
+                            icon: 'success'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'An error occurred while adding the candidate!',
+                            icon: 'error'
+                        });
+                    }
+                };
+                xhr.onerror = function() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Network error. Please try again.',
+                        icon: 'error'
+                    });
+                };
+                xhr.send(`candidateFullName=${candidateFullName}&candidateDob=${candidateDob}&candidateMob=${candidateMob}`);
+            }
+
+            function showModifyCandidate() {
+                setContent(`
+                    <h2>Modify Candidate</h2>
+                    <form id="modifyCandidateForm">
+                        <label for="candidateId">Candidate ID:</label>
+                        <input type="text" id="candidateId" name="candidateId"><br>
+
+                        <label for="newCandidateName">New Candidate Full Name:</label>
+                        <input type="text" id="newCandidateName" name="newCandidateName"><br>
+                        
+                        <label for="newCandidateDob">New Candidate Date of Birth:</label>
+                        <input type="date" id="newCandidateDob" name="newCandidateDob"><br>
+                        
+                        <label for="newCandidateMob">New Candidate Mobile:</label>
+                        <input type="text" id="newCandidateMob" name="newCandidateMob"><br>
+                        
+                        <button type="submit">Modify Candidate</button>
+                    </form>
+                `);
+
+                document.getElementById('modifyCandidateForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    modifyCandidate();
+                });
+            }
+
+            function modifyCandidate() {
+                const candidateId = document.getElementById('candidateId').value;
+                const newCandidateName = document.getElementById('newCandidateName').value;
+                const newCandidateDob = document.getElementById('newCandidateDob').value;
+                const newCandidateMob = document.getElementById('newCandidateMob').value;
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'modifyCandidate.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: xhr.responseText,
+                            icon: 'success'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'An error occurred while modifying the candidate!',
+                            icon: 'error'
+                        });
+                    }
+                };
+                xhr.onerror = function() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Network error. Please try again.',
+                        icon: 'error'
+                    });
+                };
+                xhr.send(`candidateId=${candidateId}&newCandidateName=${newCandidateName}&newCandidateDob=${newCandidateDob}&newCandidateMob=${newCandidateMob}`);
+            }
+
+            function extractDBTables() {
+                Swal.fire({
+                    title: 'Extract Database Tables',
+                    text: 'Are you sure you want to extract database tables?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, extract'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('GET', 'DBextract.php', true);
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                Swal.fire({
+                                    title: 'Success',
+                                    text: 'Database tables extracted successfully!',
+                                    icon: 'success'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'An error occurred while extracting database tables!',
+                                    icon: 'error'
+                                });
+                            }
+                        };
+                        xhr.onerror = function() {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Network error. Please try again.',
+                                icon: 'error'
+                            });
+                        };
+                        xhr.send();
+                    }
+                });
+            }
+
+            function setContent(htmlContent) {
+                content.innerHTML = htmlContent;
+            }
+        });
+    </script>
+    <script>
+        function updateVotingStatus(status) {
+            fetch('update_voting_status.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ is_voting_active: status })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Voting status updated successfully');
+                } else {
+                    alert('Failed to update voting status');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

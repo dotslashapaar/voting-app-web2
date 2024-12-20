@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Online Voting System - Sign Up</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+	
+	<script>
+		function validateForm() {
+			var username = document.getElementById("username").value;
+			var password = document.getElementById("password").value;
+			var confirmPassword = document.getElementById("confirmPassword").value;
+			var dob = document.getElementById("dob").value;
+			var phone_num = document.getElementById("phone_num").value;
+	
+			if (username === "") {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Username is required.'
+				});
+				return false;
+			}
+	
+			if (!/^[a-zA-Z ]*$/.test(username)) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Username can only contain letters and spaces.'
+				});
+				return false;
+			}
+	
+			if (password === "") {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Password is required.'
+				});
+				return false;
+			}
+	
+			if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,}$/.test(password)) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Password must be at least 5 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+				});
+				return false;
+			}
+	
+			if (confirmPassword === "") {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Confirm Password is required.'
+				});
+				return false;
+			}
+	
+			if (password !== confirmPassword) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Passwords do not match. Please try again.'
+				});
+				return false;
+			}
+	
+			if (dob === "") {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Date of Birth is required.'
+				});
+				return false;
+			}
+	
+			if (phone_num === "") {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Phone Number is required.'
+				});
+				return false;
+			}
+	
+			if (!/^\d{10}$/.test(phone_num)) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Phone Number must be 10 digits long.'
+				});
+				return false;
+			}
+	
+			return true;
+		}
+	</script>
+</head>
+<body>
+	<div class="container">
+		<a href="index.html" class="home-button">Home</a>
+		<h1>Sign Up Now</h1>
+		<form action="connect.php" method="post" onsubmit="return validateForm()">
+			<label for="username">Username:</label><br>
+			<input type="text" id="username" name="username"><br>
+			<label for="password">Password:</label><br>
+			<input type="password" id="password" name="password"><br>
+			<input type="checkbox" id="showPassword" onclick="togglePasswordType('password')"> Show Password
+			<br>
+			<br>
+			<label for="confirmPassword">Confirm Password:</label><br>
+			<input type="password" id="confirmPassword" name="confirmPassword"><br>
+            <input type="checkbox" id="showConfirmPassword" onclick="togglePasswordType('confirmPassword')"> Show Password
+			<br>
+			<br>
+			<label for="dob">Date of Birth:</label><br>
+			<input type="date" id="dob" name="dob"><br>
+			<label for="phone_num">Phone Num:</label><br>
+			<input type="text" id="phone_num" name="phone_num"><br>
+			<input type="submit" value="Sign Up">
+		</form>
+		<p>Already have an account? <a href="loginpage.html">Login now</a></p>
+	</div>
+</body>
+</html>
+<script>
+	function togglePasswordType(id) {
+	  var passwordInput = document.getElementById(id);
+	  var showPasswordCheckbox = document.getElementById("show" + id.charAt(0).toUpperCase() + id.slice(1));
+	  if (showPasswordCheckbox.checked) {
+		passwordInput.type = "text";
+	  } else {
+		passwordInput.type = "password";
+	  }
+	}
+	</script>
